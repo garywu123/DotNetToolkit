@@ -11,6 +11,7 @@ using System.Data.Common;
 using DotNetToolkit.Database.Abstractions;
 using DotNetToolkit.Database.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.Data.SqlClient;
 
 namespace DotNetToolkit.Database.Services;
 
@@ -19,7 +20,14 @@ namespace DotNetToolkit.Database.Services;
 /// </summary>
 public class DbConnectionFactory : IDbConnectionFactory
 {
+    /// <summary>
+    /// The database settings used for connection creation.
+    /// </summary>
     private readonly DatabaseSettings _settings;
+
+    /// <summary>
+    /// The provider factory used to create database connections.
+    /// </summary>
     private readonly DbProviderFactory _factory;
 
     /// <summary>
@@ -29,7 +37,7 @@ public class DbConnectionFactory : IDbConnectionFactory
     public DbConnectionFactory(IOptions<DatabaseSettings> options)
     {
         _settings = options.Value;
-        _factory = DbProviderFactories.GetFactory(_settings.ProviderName);
+        _factory = InitializeProviderFactory();
     }
 
     /// <summary>
@@ -44,6 +52,22 @@ public class DbConnectionFactory : IDbConnectionFactory
             throw new InvalidOperationException($"Could not create a connection for provider '{_settings.ProviderName}'.");
         connection.ConnectionString = _settings.ConnectionString;
         return connection;
+    }
+
+    /// <summary>
+    /// Initializes the <see cref="DbProviderFactory"/> based on the configured provider name.
+    /// </summary>
+    /// <returns>The <see cref="DbProviderFactory"/> instance for the specified provider.</returns>
+    /// <exception cref="NotSupportedException">Thrown if the provider is not supported.</exception>
+    private DbProviderFactory InitializeProviderFactory()
+    {
+        return _settings.ProviderName switch
+        {
+            "Microsoft.Data.SqlClient" => SqlClientFactory.Instance,
+            _ => throw new NotSupportedException(
+                $"Provider '{_settings.ProviderName}' is not supported by this factory."
+            )
+        };
     }
 
     /// <summary>

@@ -1,0 +1,347 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: Configuration, Extensions/DatabaseServiceCollectionExtensions.cs, Services/DbConnectionFactory.cs, Services/DbContext.cs
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+
+================================================================
+Directory Structure
+================================================================
+Configuration/DatabaseSettings.cs
+Extensions/DatabaseServiceCollectionExtensions.cs
+Services/DbConnectionFactory.cs
+Services/DbContext.cs
+
+================================================================
+Files
+================================================================
+
+================
+File: Configuration/DatabaseSettings.cs
+================
+#region License
+
+// author:         garyw
+// created:        21:07
+// description:
+
+#endregion
+
+namespace DotNetToolkit.Database.Configuration;
+
+/// <summary>
+/// Represents the configuration settings required for database connectivity, including connection string, provider name, and command timeout.
+/// </summary>
+public class DatabaseSettings
+{
+    public string ConnectionString      { get; set; } = string.Empty;
+    public string ProviderName          { get; set; } = string.Empty;
+    public int    CommandTimeoutSeconds { get; set; } = 30;
+}
+
+================
+File: Extensions/DatabaseServiceCollectionExtensions.cs
+================
+using DotNetToolkit.Database.Abstractions;
+using DotNetToolkit.Database.Configuration;
+using DotNetToolkit.Database.Internal;
+using DotNetToolkit.Database.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DotNetToolkit.Database.Extensions;
+
+/// <summary>
+/// Provides extension methods for registering database-related services in the dependency injection container.
+/// </summary>
+public static class DatabaseServiceCollectionExtensions
+{
+    /// <summary>
+    /// Adds database services and configuration to the specified <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The service collection to add the services to.</param>
+    /// <param name="configuration">The application configuration containing the database settings.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Fix: Use Bind instead of Configure to bind the configuration section to the DatabaseSettings class.
+        var databaseSettingsSection = configuration.GetSection("DatabaseSettings");
+        services.Configure<DatabaseSettings>(databaseSettingsSection);
+
+        services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+        services.AddScoped<IDbContext, DbContext>();
+        services.AddTransient(typeof(IDataMapper<>), typeof(ReflectionDataMapper<>));
+        return services;
+    }
+}
+
+================
+File: Services/DbConnectionFactory.cs
+================
+#region License
+
+// author:         garyw
+// created:        21:07
+// description:
+
+#endregion
+
+using System.Data;
+using System.Data.Common;
+using DotNetToolkit.Database.Abstractions;
+using DotNetToolkit.Database.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace DotNetToolkit.Database.Services;
+
+/// <summary>
+/// Provides a factory for creating database connections using the specified provider and settings.
+/// </summary>
+public class DbConnectionFactory : IDbConnectionFactory
+{
+    private readonly DatabaseSettings _settings;
+    private readonly DbProviderFactory _factory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbConnectionFactory"/> class.
+    /// </summary>
+    /// <param name="options">The options containing the database settings.</param>
+    public DbConnectionFactory(IOptions<DatabaseSettings> options)
+    {
+        _settings = options.Value;
+        _factory = DbProviderFactories.GetFactory(_settings.ProviderName);
+    }
+
+    /// <summary>
+    /// Creates and returns a new <see cref="IDbConnection"/> using the configured provider and connection string.
+    /// </summary>
+    /// <returns>A new <see cref="IDbConnection"/> instance.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the connection could not be created for the specified provider.</exception>
+    public IDbConnection CreateConnection()
+    {
+        var connection = _factory.CreateConnection();
+        if (connection == null)
+            throw new InvalidOperationException($"Could not create a connection for provider '{_settings.ProviderName}'.");
+        connection.ConnectionString = _settings.ConnectionString;
+        return connection;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="DbProviderFactory"/> used by this factory.
+    /// </summary>
+    /// <returns>The <see cref="DbProviderFactory"/> instance.</returns>
+    public DbProviderFactory GetProviderFactory() => _factory;
+}
+
+================
+File: Services/DbContext.cs
+================
+#region License
+
+// author:         garyw
+// created:        21:07
+// description:
+
+#endregion
+
+using System.Data;
+using System.Data.Common;
+using DotNetToolkit.Database.Abstractions;
+using DotNetToolkit.Database.Configuration;
+using DotNetToolkit.Database.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+
+namespace DotNetToolkit.Database.Services;
+
+/// <summary>
+/// Represents a database context that provides methods for executing commands and queries against a database using a connection factory and data mappers.
+/// </summary>
+public class DbContext : IDbContext
+{
+    #region Fields
+
+    private readonly IDbConnectionFactory _connectionFactory;
+    private readonly ILogger<DbContext>   _logger;
+    private readonly IServiceProvider     _serviceProvider;
+    private readonly DatabaseSettings     _settings;
+    private          IDbConnection?       _connection;
+    private          bool                 _disposed;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbContext"/> class with the specified dependencies.
+    /// </summary>
+    /// <param name="connectionFactory">The connection factory to create database connections.</param>
+    /// <param name="options">The database settings options.</param>
+    /// <param name="logger">The logger instance.</param>
+    /// <param name="serviceProvider">The service provider for resolving data mappers.</param>
+    public DbContext(IDbConnectionFactory connectionFactory,
+        IOptions<DatabaseSettings> options,
+        ILogger<DbContext> logger,
+        IServiceProvider serviceProvider)
+    {
+        _connectionFactory = connectionFactory;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+        _settings = options.Value;
+    }
+
+    #endregion
+
+    #region Interface: IDbContext
+
+    #region Methods
+
+    /// <summary>
+    /// Creates a command wrapper for the specified command text and command type.
+    /// </summary>
+    /// <param name="commandText">The command text (e.g., SQL query or stored procedure name).</param>
+    /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+    /// <returns>An <see cref="IDbCommandWrapper"/> instance.</returns>
+    public IDbCommandWrapper CreateCommand(string commandText, CommandType commandType)
+    {
+        return new DbCommandWrapper(commandText, commandType, _connectionFactory.GetProviderFactory());
+    }
+
+    /// <inheritdoc/>
+    public IDbCommandWrapper CreateCommand(string storedProcedureName)
+    {
+        return new DbCommandWrapper(storedProcedureName, CommandType.StoredProcedure, _connectionFactory.GetProviderFactory());
+    }
+
+    /// <inheritdoc/>
+    public async Task<int> ExecuteNonQueryAsync(IDbCommandWrapper command,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation($"Executing non-query: {command.CommandText}");
+        using var connection = _connectionFactory.CreateConnection();
+        await OpenConnectionAsync(connection, cancellationToken);
+        using var dbCommand = connection.CreateCommand();
+        dbCommand.CommandText = command.CommandText;
+        dbCommand.CommandType = command.CommandType;
+        dbCommand.CommandTimeout = _settings.CommandTimeoutSeconds;
+        foreach (var param in command.Parameters) dbCommand.Parameters.Add(param);
+        return await ExecuteNonQueryAsync(dbCommand, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<T>> ExecuteQueryAsync<T>(IDbCommandWrapper command,
+        CancellationToken cancellationToken = default) where T : new()
+    {
+        _logger.LogInformation($"Executing query: {command.CommandText}");
+        var result = new List<T>();
+
+        using var connection = _connectionFactory.CreateConnection();
+        await OpenConnectionAsync(connection, cancellationToken);
+        using var dbCommand = connection.CreateCommand();
+        dbCommand.CommandText = command.CommandText;
+        dbCommand.CommandType = command.CommandType;
+        dbCommand.CommandTimeout = _settings.CommandTimeoutSeconds;
+        foreach (var param in command.Parameters) dbCommand.Parameters.Add(param);
+        using var reader = await ExecuteReaderAsync(dbCommand, cancellationToken);
+
+        var service = _serviceProvider.GetService(typeof(IDataMapper<T>));
+        var mapper  = service as IDataMapper<T> ?? new ReflectionDataMapper<T>();
+        while (await ReadAsync(reader, cancellationToken)) result.Add(mapper.Map(reader));
+
+        return result;
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _connection?.Dispose();
+        _disposed = true;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Static Methods
+
+    private static async Task<int> ExecuteNonQueryAsync(IDbCommand command,
+        CancellationToken cancellationToken)
+    {
+        if (command is DbCommand dbCmd) return await dbCmd.ExecuteNonQueryAsync(cancellationToken);
+        return command.ExecuteNonQuery();
+    }
+
+    private static async Task<IDataReader> ExecuteReaderAsync(IDbCommand command,
+        CancellationToken cancellationToken)
+    {
+        if (command is DbCommand dbCmd) return await dbCmd.ExecuteReaderAsync(cancellationToken);
+        return command.ExecuteReader();
+    }
+
+    private static async Task OpenConnectionAsync(IDbConnection connection,
+        CancellationToken cancellationToken)
+    {
+        if (connection is DbConnection dbConn)
+            await dbConn.OpenAsync(cancellationToken);
+        else
+            connection.Open();
+    }
+
+    private static async Task<bool> ReadAsync(IDataReader reader,
+        CancellationToken cancellationToken)
+    {
+        if (reader is DbDataReader dbReader) return await dbReader.ReadAsync(cancellationToken);
+        return reader.Read();
+    }
+
+    #endregion
+}
+
+
+
+
+================================================================
+End of Codebase
+================================================================
