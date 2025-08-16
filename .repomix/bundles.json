@@ -1,0 +1,24 @@
+{
+  "bundles": {
+    "DatabaseTools-734": {
+      "name": "DatabaseTools",
+      "created": "2025-08-16T21:38:02.840Z",
+      "lastUsed": "2025-08-16T21:39:41.238Z",
+      "tags": [],
+      "files": [
+        "DotNetToolkit.Database/Extensions",
+        "DotNetToolkit.Database/DotNetToolkit.Database.csproj",
+        "DotNetToolkit.Database/Configuration/DatabaseSettings.cs",
+        "DotNetToolkit.Database/Abstractions/IDataMapper.cs",
+        "DotNetToolkit.Database/Abstractions/IDbCommandWrapper.cs",
+        "DotNetToolkit.Database/Abstractions/IDbConnectionFactory.cs",
+        "DotNetToolkit.Database/Abstractions/IDbContext.cs",
+        "DotNetToolkit.Database/Internal/DbCommandWrapper.cs",
+        "DotNetToolkit.Database/Internal/ReflectionDataMapper.cs",
+        "DotNetToolkit.Database/Services/DbConnectionFactory.cs",
+        "DotNetToolkit.Database/Services/DbContext.cs"
+      ],
+      "configPath": ".repomix/config/DatabaseTools-repomix.config.json"
+    }
+  }
+}
