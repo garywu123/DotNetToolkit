@@ -19,6 +19,26 @@
         "DotNetToolkit.Database/Services/DbContext.cs"
       ],
       "configPath": ".repomix/config/DatabaseTools-repomix.config.json"
+    },
+    "DotNetToolkit_Whole-932": {
+      "name": "DotNetToolkit_Whole",
+      "created": "2025-11-26T06:40:19.218Z",
+      "lastUsed": "2025-11-26T06:45:42.729Z",
+      "tags": [],
+      "files": [
+        "DotNetToolkit.Logging",
+        "DotNetToolkit.sln",
+        "DotNetToolkit.Database/Abstractions",
+        "DotNetToolkit.Database/bin",
+        "DotNetToolkit.Database/Configuration",
+        "DotNetToolkit.Database/Extensions",
+        "DotNetToolkit.Database/Internal",
+        "DotNetToolkit.Database/obj",
+        "DotNetToolkit.Database/Services",
+        "DotNetToolkit.Database/DotNetToolkit.Database.csproj",
+        "DotNetToolkit.Database/DotNetToolkit.Database.sln"
+      ],
+      "configPath": ".repomix/config/DotNetToolkit_Whole-repomix.config.json"
     }
   }
 }
