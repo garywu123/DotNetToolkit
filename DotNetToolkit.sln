@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.Logging", "Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.Database", "DotNetToolkit.Database\DotNetToolkit.Database.csproj", "{A6820904-E24D-48FE-98B9-44454829DB87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.General", "DotNetToolkit.General\DotNetToolkit.General.csproj", "{5A8D3709-6925-4F81-B715-BE3171F5EED3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A6820904-E24D-48FE-98B9-44454829DB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6820904-E24D-48FE-98B9-44454829DB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6820904-E24D-48FE-98B9-44454829DB87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
