@@ -2,7 +2,9 @@
 
 // author:         garyw
 // created:        21:07
-// description:
+// description:    Reflection-based implementation of IDataMapper<T> that maps data from an IDataReader to an instance of T.
+// updated:        2025-11-28 - updated file comments per Copilot instruction
+// copyright:      (c) DotNetToolkit
 
 #endregion
 
@@ -24,12 +26,16 @@ public class ReflectionDataMapper<T> : IDataMapper<T> where T : new()
         for (var i = 0; i < reader.FieldCount; i++)
         {
             var name = reader.GetName(i);
-            var prop = Array.Find(props, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+            var prop = Array.Find(
+                props, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)
+            );
+
             if (prop != null && !reader.IsDBNull(i))
             {
                 prop.SetValue(obj, Convert.ChangeType(reader.GetValue(i), prop.PropertyType));
             }
         }
+
         return obj;
     }
 }

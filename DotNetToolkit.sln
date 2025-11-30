@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.Database", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.General", "DotNetToolkit.General\DotNetToolkit.General.csproj", "{5A8D3709-6925-4F81-B715-BE3171F5EED3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolkit.Tests", "Tests\DotNetToolkit.Tests\DotNetToolkit.Tests.csproj", "{2A2C742E-0606-465E-B8C1-227C2A1CDD91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A8D3709-6925-4F81-B715-BE3171F5EED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A2C742E-0606-465E-B8C1-227C2A1CDD91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A2C742E-0606-465E-B8C1-227C2A1CDD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A2C742E-0606-465E-B8C1-227C2A1CDD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A2C742E-0606-465E-B8C1-227C2A1CDD91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2A2C742E-0606-465E-B8C1-227C2A1CDD91} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60BAD445-C08F-4FB3-86F5-A1C9702AE9C7}

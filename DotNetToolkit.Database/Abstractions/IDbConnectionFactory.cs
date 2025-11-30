@@ -23,6 +23,14 @@ public interface IDbConnectionFactory
     IDbConnection CreateConnection();
 
     /// <summary>
+    /// Asynchronously creates and returns a new <see cref="IDbConnection"/>.
+    /// Implementations should open connections as needed.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A task that returns a new <see cref="IDbConnection"/> instance.</returns>
+    Task<IDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets the <see cref="DbProviderFactory"/> used by this factory.
     /// </summary>
     /// <returns>The <see cref="DbProviderFactory"/> instance.</returns>

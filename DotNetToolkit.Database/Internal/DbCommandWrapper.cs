@@ -51,16 +51,18 @@ public class DbCommandWrapper : IDbCommandWrapper
         ParameterDirection direction = ParameterDirection.Input)
     {
         var param = _factory.CreateParameter();
-        if (param == null)
+        if (param != null)
+        {
+            param.ParameterName = name;
+            param.Value = value ?? DBNull.Value;
+            param.DbType = type;
+            param.Direction = direction;
+            _parameters.Add(param);
+        }
+        else
             throw new InvalidOperationException(
-                "Could not create a parameter from the provider factory."
-            );
-
-        param.ParameterName = name;
-        param.Value = value ?? DBNull.Value;
-        param.DbType = type;
-        param.Direction = direction;
-        _parameters.Add(param);
+                        "Could not create a parameter from the provider factory."
+                    );
     }
 
     /// <inheritdoc/>
