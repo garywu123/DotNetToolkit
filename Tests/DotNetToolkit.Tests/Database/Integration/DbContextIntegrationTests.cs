@@ -253,16 +253,16 @@ public class DbContextIntegrationTests : IAsyncLifetime
         var outputParam = command.AddOutputParameter("@UserId", DbType.Int32);
 
         // Act
-        var result = await _dbContext.ExecuteNonQueryAsync(command);
+        await _dbContext.ExecuteNonQueryAsync(command);
 
         // Assert
-        Assert.True(result >= 0);
-        
+        // Removed result assertion because stored procedures use SET NOCOUNT ON
+
         // Verify user was created
         var verifyCommand = _dbContext.CreateCommand("usp_GetUserById");
         verifyCommand.AddParameter("@UserId", outputParam.Value);
         var users = await _dbContext.ExecuteQueryAsync<UserDto>(verifyCommand);
-        
+
         Assert.Single(users);
         Assert.Equal("testuser", users[0].Username);
         Assert.Equal("test@example.com", users[0].Email);
@@ -282,11 +282,11 @@ public class DbContextIntegrationTests : IAsyncLifetime
         command.AddParameter("@LastName", "Doe");
 
         // Act
-        var result = await _dbContext.ExecuteNonQueryAsync(command);
+        _ = await _dbContext.ExecuteNonQueryAsync(command);
 
         // Assert
-        Assert.True(result >= 0);
-        
+        // Assert.True(result >= 0);
+
         // Verify changes
         var verifyCommand = _dbContext.CreateCommand("usp_GetUserById");
         verifyCommand.AddParameter("@UserId", 1);
@@ -308,11 +308,11 @@ public class DbContextIntegrationTests : IAsyncLifetime
         command.AddParameter("@UserId", 2);
 
         // Act
-        var result = await _dbContext.ExecuteNonQueryAsync(command);
+        await _dbContext.ExecuteNonQueryAsync(command);
 
         // Assert
-        Assert.True(result >= 0);
-        
+        // Removed result assertion because stored procedures use SET NOCOUNT ON
+
         // Verify user is not in active list
         var verifyCommand = _dbContext.CreateCommand("usp_GetAllUsers");
         var users = await _dbContext.ExecuteQueryAsync<UserDto>(verifyCommand);
@@ -341,11 +341,11 @@ public class DbContextIntegrationTests : IAsyncLifetime
         addItemCommand.AddParameter("@ProductId", 1); // Laptop Pro 15
         addItemCommand.AddParameter("@Quantity", 2);
         var orderItemIdParam = addItemCommand.AddOutputParameter("@OrderItemId", DbType.Int32);
-        
-        var result = await _dbContext.ExecuteNonQueryAsync(addItemCommand);
+
+        await _dbContext.ExecuteNonQueryAsync(addItemCommand);
 
         // Assert
-        Assert.True(result >= 0);
+        // Removed result assertion because stored procedures use SET NOCOUNT ON
         Assert.True((int)orderItemIdParam.Value! > 0);
 
         // Verify order details
@@ -369,11 +369,11 @@ public class DbContextIntegrationTests : IAsyncLifetime
         command.AddParameter("@NewPrice", 34.99m);
 
         // Act
-        var result = await _dbContext.ExecuteNonQueryAsync(command);
+        await _dbContext.ExecuteNonQueryAsync(command);
 
         // Assert
-        Assert.True(result >= 0);
-        
+        // Removed result assertion because stored procedures use SET NOCOUNT ON
+
         // Verify price change
         var verifyCommand = _dbContext.CreateCommand("usp_GetProductsByCategory");
         verifyCommand.AddParameter("@CategoryId", 1);
