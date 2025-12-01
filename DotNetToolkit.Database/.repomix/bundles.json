@@ -1,0 +1,17 @@
+{
+  "bundles": {
+    "DatabaseService-936": {
+      "name": "DatabaseService",
+      "created": "2025-07-06T20:12:01.996Z",
+      "lastUsed": "2025-07-06T20:12:01.996Z",
+      "tags": [],
+      "files": [
+        "Configuration",
+        "Extensions/DatabaseServiceCollectionExtensions.cs",
+        "Services/DbConnectionFactory.cs",
+        "Services/DbContext.cs"
+      ],
+      "configPath": ".repomix/config/DatabaseService-repomix.config.json"
+    }
+  }
+}

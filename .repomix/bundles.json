@@ -1,0 +1,38 @@
+{
+  "bundles": {
+    "DatabaseTools-734": {
+      "name": "DatabaseTools",
+      "created": "2025-08-16T21:38:02.840Z",
+      "lastUsed": "2025-08-16T21:39:41.238Z",
+      "tags": [],
+      "files": [
+        "DotNetToolkit.Database/Extensions",
+        "DotNetToolkit.Database/DotNetToolkit.Database.csproj",
+        "DotNetToolkit.Database/Configuration/DatabaseSettings.cs",
+        "DotNetToolkit.Database/Abstractions/IDataMapper.cs",
+        "DotNetToolkit.Database/Abstractions/IDbCommandWrapper.cs",
+        "DotNetToolkit.Database/Abstractions/IDbConnectionFactory.cs",
+        "DotNetToolkit.Database/Abstractions/IDbContext.cs",
+        "DotNetToolkit.Database/Internal/DbCommandWrapper.cs",
+        "DotNetToolkit.Database/Internal/ReflectionDataMapper.cs",
+        "DotNetToolkit.Database/Services/DbConnectionFactory.cs",
+        "DotNetToolkit.Database/Services/DbContext.cs"
+      ],
+      "configPath": ".repomix/config/DatabaseTools-repomix.config.json"
+    },
+    "DotNetToolkit_Whole-932": {
+      "name": "DotNetToolkit_Whole",
+      "created": "2025-11-26T06:40:19.218Z",
+      "lastUsed": "2025-11-28T09:20:30.420Z",
+      "tags": [],
+      "files": [
+        "DotNetToolkit.sln",
+        "Tests/DotNetToolkit.Tests",
+        "DotNetToolkit.Logging",
+        "DotNetToolkit.General",
+        "DotNetToolkit.Database"
+      ],
+      "configPath": ".repomix/config/DotNetToolkit_Whole-repomix.config.json"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-﻿namespace DotNetToolkit.Logging
+﻿namespace DotNetToolkit.General
 {
     public class Class1
     {
