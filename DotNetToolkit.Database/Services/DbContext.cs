@@ -81,7 +81,7 @@ public class DbContext : IDbContext
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation($"Executing non-query: {command.CommandText}");
-        using var connection = _connectionFactory.CreateConnection();
+        using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
         await OpenConnectionAsync(connection, cancellationToken);
         using var dbCommand = connection.CreateCommand();
         dbCommand.CommandText = command.CommandText;
@@ -98,7 +98,7 @@ public class DbContext : IDbContext
         _logger.LogInformation($"Executing query: {command.CommandText}");
         var result = new List<T>();
 
-        using var connection = _connectionFactory.CreateConnection();
+        using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
         await OpenConnectionAsync(connection, cancellationToken);
         using var dbCommand = connection.CreateCommand();
         dbCommand.CommandText = command.CommandText;
