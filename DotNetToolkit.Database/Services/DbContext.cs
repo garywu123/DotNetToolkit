@@ -145,10 +145,20 @@ public class DbContext : IDbContext
     private static async Task OpenConnectionAsync(IDbConnection connection,
         CancellationToken cancellationToken)
     {
+        // Only open the connection if it is not already open. Some factories may
+        // return an already-open connection (for example when using async creation
+        // helpers) so attempting to open again will throw. Guarding on the
+        // ConnectionState avoids that issue.
         if (connection is DbConnection dbConn)
-            await dbConn.OpenAsync(cancellationToken);
+        {
+            if (dbConn.State != ConnectionState.Open)
+                await dbConn.OpenAsync(cancellationToken);
+        }
         else
-            connection.Open();
+        {
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+        }
     }
 
     private static async Task<bool> ReadAsync(IDataReader reader,

@@ -12,7 +12,7 @@ using System.Data;
 using DotNetToolkit.Database.Abstractions;
 using DotNetToolkit.Database.Configuration;
 using DotNetToolkit.Database.Services;
-using DotNetToolkit.Tests.Database.Extensions;
+using DotNetToolkit.Database.Extensions;
 using DotNetToolkit.Tests.Database.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
