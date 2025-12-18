@@ -8,7 +8,7 @@
 
 #endregion
 
-using DotNetToolkit.Tests.Database.Helpers;
+using DotNetToolkit.TestHelper.Database.SqlServer;
 
 namespace DotNetToolkit.Tests.Database.Fixtures;
 

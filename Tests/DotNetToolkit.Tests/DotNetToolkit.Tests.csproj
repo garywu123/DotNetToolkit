@@ -4,9 +4,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <PreviewFeature>true</PreviewFeature>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DotNetToolkit.TestHelper\DotNetToolkit.TestHelper.csproj" />
     <ProjectReference Include="..\..\DotNetToolkit.Database\DotNetToolkit.Database.csproj" />
     <ProjectReference Include="..\..\DotNetToolkit.General\DotNetToolkit.General.csproj" />
     <ProjectReference Include="..\..\DotNetToolkit.Logging\DotNetToolkit.Logging.csproj" />
@@ -37,6 +38,10 @@
     <None Update="Database\Scripts\InitializeTestDatabase.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Database\Helpers\" />
   </ItemGroup>
 
 </Project>
