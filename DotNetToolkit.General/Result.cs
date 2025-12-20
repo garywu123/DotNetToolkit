@@ -45,4 +45,19 @@ public sealed class Result<T>
             ? throw new ArgumentException("error must be provided.", nameof(error))
             : new Result<T>(default, error, false);
     }
+
+    /// <summary>
+    /// Failure result that also carries a value payload. Some callers want to return
+    /// a richer failure object (for example <see cref="ReportSyncer.Core.Schema.Mapping.SchemaMappingResult"/>)
+    /// along with a failure marker.
+    /// </summary>
+    /// <param name="value">Failure payload value, may be inspected by callers.</param>
+    /// <param name="error">Human-readable error message describing the failure.</param>
+    /// <returns>A failed <see cref="Result{T}"/> containing the provided value and error.</returns>
+    public static Result<T> Fail(T value, string error)
+    {
+        return string.IsNullOrWhiteSpace(error)
+            ? throw new ArgumentException("error must be provided.", nameof(error))
+            : new Result<T>(value, error, false);
+    }
 }
