@@ -30,10 +30,32 @@ public class ReflectionDataMapper<T> : IDataMapper<T> where T : new()
                 props, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)
             );
 
-            if (prop != null && !reader.IsDBNull(i))
+            if (prop == null || reader.IsDBNull(i)) continue;
+
+            var rawValue   = reader.GetValue(i);
+            var propType   = prop.PropertyType;
+            var targetType = Nullable.GetUnderlyingType(propType) ?? propType;
+
+            object? converted;
+
+            if (targetType.IsEnum)
             {
-                prop.SetValue(obj, Convert.ChangeType(reader.GetValue(i), prop.PropertyType));
+                // Support both numeric and string-backed enums
+                converted = rawValue is string s
+                    ? Enum.Parse(targetType, s)
+                    : Enum.ToObject(targetType, rawValue);
             }
+            else if (targetType == typeof(Guid))
+            {
+                converted = rawValue is Guid g ? g : Guid.Parse(rawValue.ToString()!);
+            }
+            else
+            {
+                // Convert to the underlying (non-nullable) type, e.g. Int32 for Nullable<int>
+                converted = Convert.ChangeType(rawValue, targetType);
+            }
+
+            prop.SetValue(obj, converted);
         }
 
         return obj;
