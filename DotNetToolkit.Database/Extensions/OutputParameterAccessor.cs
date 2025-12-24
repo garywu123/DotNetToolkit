@@ -4,7 +4,6 @@
 // Description: Provides a small accessor for reading output/inout parameter values
 //              from an <see cref="IDbCommandWrapper"/> after command execution.
 
-using System;
 using DotNetToolkit.Database.Abstractions;
 
 namespace DotNetToolkit.Database.Extensions

@@ -5,7 +5,6 @@
 //              and simplify adding parameters from callers. Preserves explicit
 //              AddParameter(name, value, DbType, ...) API and delegates to it.
 
-using System;
 using System.Data;
 using DotNetToolkit.Database.Abstractions;
 

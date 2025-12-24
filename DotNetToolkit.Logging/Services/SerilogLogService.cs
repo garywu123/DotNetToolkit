@@ -9,7 +9,6 @@
 // -----------------------------------------------------------------------
 
 using Serilog;
-using Serilog.Events;
 
 namespace DotNetToolkit.Logging.Services;
 
